@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pixel Blast - Agenda tu videollamada</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #000;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 90%;
+            padding: 40px;
+            background: #111;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: #333;
+            border-radius: 2px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #fff, #ccc);
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+
+        .step {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .step.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #fff, #aaa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 1.8em;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .subtitle {
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            color: #ccc;
+            text-align: center;
+        }
+
+        .question {
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .required {
+            color: #ff4444;
+        }
+
+        input[type="text"], input[type="email"], textarea, select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #333;
+            background: #222;
+            color: #fff;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        input[type="text"]:focus, input[type="email"]:focus, textarea:focus, select:focus {
+            border-color: #fff;
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .checkbox-group, .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .checkbox-item, .radio-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border: 2px solid #333;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .checkbox-item:hover, .radio-item:hover {
+            border-color: #666;
+            background: #1a1a1a;
+        }
+
+        .checkbox-item.selected, .radio-item.selected {
+            border-color: #fff;
+            background: #1a1a1a;
+        }
+
+        .checkbox-item input, .radio-item input {
+            width: auto;
+            margin-right: 15px;
+        }
+
+        .checkbox-item label, .radio-item label {
+            flex: 1;
+            cursor: pointer;
+            font-size: 1em;
+            line-height: 1.4;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary {
+            background: #fff;
+            color: #000;
+            flex: 1;
+        }
+
+        .btn-primary:hover {
+            background: #f0f0f0;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #fff;
+            border: 2px solid #fff;
+            flex: 1;
+        }
+
+        .btn-secondary:hover {
+            background: #fff;
+            color: #000;
+        }
+
+        .btn-submit {
+            background: linear-gradient(45deg, #fff, #ccc);
+            color: #000;
+            width: 100%;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 255, 255, 0.2);
+        }
+
+        .email-info {
+            font-size: 0.9em;
+            color: #888;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .step-counter {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #333;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+
+        .service-description {
+            font-size: 0.9em;
+            color: #aaa;
+            margin-top: 5px;
+            line-height: 1.4;
+        }
+
+        .price-note {
+            font-size: 0.85em;
+            color: #ff6b6b;
+            margin-top: 10px;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .question {
+                font-size: 1.2em;
+            }
+            
+            .buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="step-counter">
+            <span id="step-counter">1 / 11</span>
+        </div>
+        
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill"></div>
+        </div>
+
+        <form name="pixel-blast-form" method="POST" netlify netlify-honeypot="bot-field" data-netlify="true">
+            <input type="hidden" name="bot-field" />
+            <input type="hidden" name="form-name" value="pixel-blast-form" />
+            
+            <!-- Paso 1: Bienvenida -->
+            <div class="step active" id="step-1">
+                <h1>Agenda una videollamada con nosotros</h1>
+                <div class="subtitle">
+                    Hola! Somos Antuane Alvarado G. y Jorge Luis Sandoval B., diseñadores estratégicos y fundadores de este espacio creativo <strong>Pixel Blast</strong>.<br><br>
+                    
+                    Nos gusta formar parte vital en la historia y trayecto de las marcas, productos, empresas o emprendedores, caminando juntos para lograr dar vida a su proyecto con una estrategia visual.<br><br>
+                    
+                    <strong>Agenda con nosotros sin costo adicional</strong> y nos pondremos en contacto contigo lo más pronto posible. <strong>Agradecemos completar este gran y valioso paso</strong>
+                </div>
+                <div class="email-info">pixelblastdesignstudio@gmail.com</div>
+                <div class="buttons">
+                    <button type="button" class="btn btn-primary" onclick="nextStep()">Comenzar</button>
+                </div>
+            </div>
+
+            <!-- Paso 2: Nombre -->
+            <div class="step" id="step-2">
+                <div class="question">Hola, ¿Cómo te llamas? ✨</div>
+                <input type="text" name="nombre" required placeholder="Tu nombre completo">
+                <div class="buttons">
+                    <button type="button" class="btn btn-secondary" onclick="prevStep()">Anterior</button>
+                    <button type="button" class="btn btn-primary" onclick="nextStep()">Siguiente</button>
+                </div>
+            </div>
+
+            <!-- Paso 3: País/Ciudad -->
+            <div class="step" id="step-3">
+                <div class="question">Nosotros somos de Perú ¿De qué país o ciudad eres tú? 🤔 <span class="required">*</span></div>
+                <input type="text" name="pais_ciudad" required placeholder="Ej: Lima, Perú">
+                <div class="buttons">
+                    <button type="button" class="btn btn-secondary" onclick="prevStep()">Anterior</button>
+                    <button type="button" class="btn btn-primary" onclick="nextStep()">Siguiente</button>
+                </div>
+            </div>
+
+            <!-- Paso 4: Medio de contacto -->
+            <div class="step" id="step-4">
+                <div class="question">Nos comunicaremos contigo. ¿Qué medio prefieres: WhatsApp, email u otro? 🤔</div>
+                <div class="subtitle">Según tu elección bríndanos tu número o correo u otro, <span class="required">*</span></div>
+                <input type="text" name="contacto" required placeholder="Ej: +51 999 999 999 o correo@email.com">
+                <div class="buttons">
+                    <button type="button" class="btn btn-secondary" onclick="prevStep()">Anterior</button>
+                    <button type="button" class="btn btn-primary" onclick="nextStep()">Siguiente</button>
+                </div>
+            </div>
+
+            <!-- Paso 5: Tipo de servicio -->
+            <div class="step" id="step-5">
+                <div class="question">¿En qué tipo de servicio estás interesado? 🤩</div>
+                <div class="radio-group">
+                    <div class="radio-item">
+                        <input type="radio" name="servicio" value="branding" id="branding">
+                        <label for="branding">
+                            <strong>Branding</strong>
+                            <div class="service-description">¿Crearte un logo? haremos más que eso, un sistema de marca, identidad visual, que sea adaptable a múltiples formatos, es decir una marca completamente funcional.</div>
+                        </label>
+                    </div>
+                    <div class="radio-item">
+                        <input type="radio" name="servicio" value="packaging" id="packaging">
+                        <label for="packaging">
+                            <strong>Packaging</strong>
+                            <div class="service-description">Tu empaque o etiqueta debe contar una historia, lograr una conexión directa con tu consumidor.</div>
+                        </label>
+                    </div>
+                    <div class="radio-item">
+                        <input type="radio" name="servicio" value="otros" id="otros">
+                        <label for="otros">
+                            <strong>Otros servicios</strong>
+                            <div class="service-description">Diseño de post en redes sociales, animación, ilustración, etc.</div>
+                        </label>
+                    </div>
+                </div>
+                <div class="buttons">
+                    <button type="button" class="btn btn-secondary" onclick="prevStep()">Anterior</button>
+                    <button type="button" class="btn btn-primary" onclick="nextStep()">Siguiente</button>
+                </div>
+            </div>
+
+            <!-- Paso 6: Presupuesto Branding -->
+            <div class="step" id="step-6">
+                <div class="question">Si elegiste el servicio de BRANDING, ¿Cuánto estás dispuesto a invertir en tu proyecto para asegurar un buen resultado y proteger tu inversión? 🤩</div>
+                <div class="subtitle">*Omite esta pregunta si no es el servicio que elegiste*</div>
+                <div class="price-note">Los precios en este servicio NO SE PUEDEN REDUCIR por el desarrollo que implica.</div>
+                <div class="radio-group">
+                    <div class="radio-item">
+                        <input type="radio" name="presupuesto_branding" value="500-600" id="branding1">
+                        <label for="branding1">
+                            <strong>500 USD - 600 USD</strong>
+                            <div class="service-description">Te brindamos la SOLUCIÓN ESENCIAL que debe tener tu marca.</div>
+                        </label>
+                    </div>
+                    <div class="radio-item">
+                        <input type="radio" name="presupuesto_branding" value="650-750" id="branding2">
+                        <label for="branding2">
+                            <strong>650 USD - 750 USD</strong>
+                            <div class="service-description">Te brindamos y acompañamos la SOLUCIÓN NECESARIA para un buen uso que debe tener tu marca.</div>
+                        </label>
+                    </div>
+                    <div class="radio-item">
+                        <input type="radio" name="presupuesto_branding" value="1100+" id="branding3">
+                        <label for="branding3">
+                            <strong>+1100 USD</strong>
+                            <div class="service-description">Te brindamos y acompañamos la SOLUCIÓN ESTRATÉGICA PARA MARCAR DIFERENCIACIÓN con tu marca.</div>
+                        </label>
+                    </div>
+                    <div class="radio-item">
+                        <input type="radio" name="presupuesto_branding" value="otro-servicio" id="branding4">
+                        <label for="branding4">Listo, lo elegí en otro servicio.</label>
+                    </div>
+                </div>
+                <div class="buttons">
+                    <button type="button" class="btn btn-secondary" onclick="prevStep()">Anterior</button>
+                    <button type="button" class="btn btn-primary" onclick="nextStep()">Siguiente</button>
+                </div>
+            </div>
+
+            <!-- Paso 7: Presupuesto Packaging -->
+            <div class="step" id="step-7">
+                <div class="question">Si elegiste el servicio de PACKAGING, ¿cuánto estás dispuesto a invertir en tu proyecto para asegurar un buen resultado y proteger tu inversión? 🤩</div>
+                <div class="subtitle">*Omite esta pregunta si no es el servicio que elegiste*</div>
+                <div class="radio-group">
+                    <div class="radio-item">
+                        <input type="radio" name="presupuesto_packaging" value="250-400" id="packaging1">
+                        <label for="packaging1">250 USD - 400 USD</label>
+                    </div>
+                    <div class="radio-item">
+                        <input type="radio" name="presupuesto_packaging" value="650-750" id="packaging2">
+                        <label for="packaging2">650 USD - 750 USD</label>
+                    </div>
+                    <div class="radio-item">
+                        <input type="radio" name="presupuesto_packaging" value="800+" id="packaging3">
+                        <label for="packaging3">+800 USD</label>
+                    </div>
+                    <div class="radio-item">
+                        <input type="radio" name="presupuesto_packaging" value="otro-servicio" id="packaging4">
+                        <label for="packaging4">Listo, lo elegí en otro servicio.</label>
+                    </div>
+                </div>
+                <div class="buttons">
+                    <button type="button" class="btn btn-secondary" onclick="prevStep()">Anterior</button>
+                    <button type="button" class="btn btn-primary" onclick="nextStep()">Siguiente</button>
+                </div>
+            </div>
+
+            <!-- Paso 8: Presupuesto Otros -->
+            <div class="step" id="step-8">
+                <div class="question">Si elegiste OTROS SERVICIOS, ¿cuánto estás dispuesto a invertir en tu proyecto para asegurar un buen resultado y proteger tu inversión? 🤩</div>
+                <div class="subtitle">*Omite esta pregunta si no es el servicio que elegiste*</div>
+                <div class="radio-group">
+                    <div class="radio-item">
+                        <input type="radio" name="presupuesto_otros" value="menos-150" id="otros1">
+                        <label for="otros1">Menos de $150 dólares</label>
+                    </div>
+                    <div class="radio-item">
+                        <input type="radio" name="presupuesto_otros" value="150" id="otros2">
+                        <label for="otros2">$150 dólares</label>
+                    </div>
+                    <div class="radio-item">
+                        <input type="radio" name="presupuesto_otros" value="200" id="otros3">
+                        <label for="otros3">$200 dólares</label>
+                    </div>
+                    <div class="radio-item">
+                        <input type="radio" name="presupuesto_otros" value="300" id="otros4">
+                        <label for="otros4">$300 dólares</label>
+                    </div>
+                    <div class="radio-item">
+                        <input type="radio" name="presupuesto_otros" value="300+" id="otros5">
+                        <label for="otros5">Más de $300 dólares</label>
+                    </div>
+                    <div class="radio-item">
+                        <input type="radio" name="presupuesto_otros" value="otro-servicio" id="otros6">
+                        <label for="otros6">Listo, lo elegí en otro servicio.</label>
+                    </div>
+                </div>
+                <div class="buttons">
+                    <button type="button" class="btn btn-secondary" onclick="prevStep()">Anterior</button>
+                    <button type="button" class="btn btn-primary" onclick="nextStep()">Siguiente</button>
+                </div>
+            </div>
+
+            <!-- Paso 9: Nombre del proyecto -->
+            <div class="step" id="step-9">
+                <div class="question">¿Cuál es el nombre de tu marca o proyecto? Coméntanos 🤗</div>
+                <input type="text" name="nombre_proyecto" placeholder="Nombre de tu marca o proyecto">
+                <div class="buttons">
+                    <button type="button" class="btn btn-secondary" onclick="prevStep()">Anterior</button>
+                    <button type="button" class="btn btn-primary" onclick="nextStep()">Siguiente</button>
+                </div>
+            </div>
+
+            <!-- Paso 10: Descripción del proyecto -->
+            <div class="step" id="step-10">
+                <div class="question">¿Me cuentas un poco de tu marca o proyecto? Una breve descripción 👀 <span class="required">*</span></div>
+                <textarea name="descripcion_proyecto" required placeholder="Cuéntanos sobre tu proyecto, qué haces, a quién te diriges, etc."></textarea>
+                <div class="buttons">
+                    <button type="button" class="btn btn-secondary" onclick="prevStep()">Anterior</button>
+                    <button type="button" class="btn btn-primary" onclick="nextStep()">Siguiente</button>
+                </div>
+            </div>
+
+            <!-- Paso 11: Información final -->
+            <div class="step" id="step-11">
+                <div class="question">Información adicional</div>
+                
+                <div style="margin-bottom: 20px;">
+                    <label for="aspecto_especifico">¿En qué aspecto específico te gustaría que te ayudemos? Cuéntanos qué estás buscando y así podremos apoyarte mejor ✨</label>
+                    <textarea name="aspecto_especifico" placeholder="Describe específicamente en qué necesitas ayuda"></textarea>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <label for="redes_sociales">Si tienes redes sociales, déjanos aquí el enlace o dinos cómo encontrarte en Instagram, TikTok u otra plataforma 🤗</label>
+                    <input type="text" name="redes_sociales" placeholder="@tuusuario o enlace completo">
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <label for="como_llegaste">¿Cómo llegaste a nosotros? 😃</label>
+                    <div class="radio-group">
+                        <div class="radio-item">
+                            <input type="radio" name="como_llegaste" value="tiktok" id="tiktok">
+                            <label for="tiktok">TikTok</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" name="como_llegaste" value="instagram" id="instagram">
+                            <label for="instagram">Instagram</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" name="como_llegaste" value="facebook" id="facebook">
+                            <label for="facebook">Facebook</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" name="como_llegaste" value="behance" id="behance">
+                            <label for="behance">Behance</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" name="como_llegaste" value="recomendacion" id="recomendacion">
+                            <label for="recomendacion">Recomendación</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" name="como_llegaste" value="otro" id="otro_medio">
+                            <label for="otro_medio">Otro</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 30px;">
+                    <label for="fecha_inicio">¿Cuándo te gustaría comenzar tu proyecto? Indica fecha y mes. Recuerda: a mejor tiempo, mejor resultado 🏆 <span class="required">*</span></label>
+                    <input type="text" name="fecha_inicio" required placeholder="Ej: 15 de enero, 2025">
+                </div>
+
+                <div class="buttons">
+                    <button type="button" class="btn btn-secondary" onclick="prevStep()">Anterior</button>
+                    <button type="submit" class="btn btn-submit">Enviar Formulario</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        const totalSteps = 11;
+
+        function updateProgress() {
+            const progress = (currentStep / totalSteps) * 100;
+            document.getElementById('progress-fill').style.width = progress + '%';
+            document.getElementById('step-counter').textContent = currentStep + ' / ' + totalSteps;
+        }
+
+        function showStep(stepNumber) {
+            // Ocultar todos los pasos
+            document.querySelectorAll('.step').forEach(step => {
+                step.classList.remove('active');
+            });
+            
+            // Mostrar paso actual
+            document.getElementById('step-' + stepNumber).classList.add('active');
+            updateProgress();
+        }
+
+        function nextStep() {
+            const currentStepElement = document.getElementById('step-' + currentStep);
+            const requiredFields = currentStepElement.querySelectorAll('input[required], textarea[required]');
+            let allValid = true;
+
+            // Validar campos requeridos
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    field.style.borderColor = '#ff4444';
+                    allValid = false;
+                } else {
+                    field.style.borderColor = '#333';
+                }
+            });
+
+            if (allValid && currentStep < totalSteps) {
+                currentStep++;
+                showStep(currentStep);
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                showStep(currentStep);
+            }
+        }
+
+        // Manejar selección de radio buttons y checkboxes
+        document.addEventListener('change', function(e) {
+            if (e.target.type === 'radio') {
+                // Remover selección anterior
+                const name = e.target.name;
+                document.querySelectorAll(`input[name="${name}"]`).forEach(radio => {
+                    radio.closest('.radio-item').classList.remove('selected');
+                });
+                
+                // Agregar selección actual
+                e.target.closest('.radio-item').classList.add('selected');
+            }
+        });
+
+        // Inicializar
+        updateProgress();
+
+        // Manejar envío del formulario
+        document.querySelector('form').addEventListener('submit', function(e) {
+            // El formulario se enviará automáticamente a Netlify
+            // Puedes agregar aquí validaciones adicionales si es necesario
+        });
+    </script>
+</body>
+</html>
