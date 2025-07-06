@@ -25,9 +25,7 @@
             max-width: 600px;
             width: 90%;
             padding: 40px;
-            background: #111;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(255, 255, 255, 0.1);
+            background: #000;
             position: relative;
         }
 
@@ -63,24 +61,23 @@
         h1 {
             font-size: 2.5em;
             margin-bottom: 20px;
-            background: linear-gradient(45deg, #fff, #aaa);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: #fff;
             text-align: center;
+            font-weight: 700;
         }
 
         h2 {
             font-size: 1.8em;
             margin-bottom: 15px;
             font-weight: 600;
+            color: #fff;
         }
 
         .subtitle {
             font-size: 1.1em;
             line-height: 1.6;
             margin-bottom: 30px;
-            color: #ccc;
+            color: #aaa;
             text-align: center;
         }
 
@@ -88,6 +85,7 @@
             font-size: 1.3em;
             margin-bottom: 20px;
             font-weight: 500;
+            color: #fff;
         }
 
         .required {
@@ -97,10 +95,10 @@
         input[type="text"], input[type="email"], textarea, select {
             width: 100%;
             padding: 15px;
-            border: 2px solid #333;
-            background: #222;
+            border: 1px solid #333;
+            background: #000;
             color: #fff;
-            border-radius: 10px;
+            border-radius: 8px;
             font-size: 1em;
             transition: all 0.3s ease;
             outline: none;
@@ -108,7 +106,6 @@
 
         input[type="text"]:focus, input[type="email"]:focus, textarea:focus, select:focus {
             border-color: #fff;
-            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
         }
 
         textarea {
@@ -126,21 +123,20 @@
             display: flex;
             align-items: center;
             padding: 15px;
-            border: 2px solid #333;
-            border-radius: 10px;
+            border: 1px solid #333;
+            border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s ease;
             position: relative;
+            background: #000;
         }
 
         .checkbox-item:hover, .radio-item:hover {
             border-color: #666;
-            background: #1a1a1a;
         }
 
         .checkbox-item.selected, .radio-item.selected {
             border-color: #fff;
-            background: #1a1a1a;
         }
 
         .checkbox-item input, .radio-item input {
@@ -219,6 +215,7 @@
             top: 20px;
             right: 20px;
             background: #333;
+            color: #fff;
             padding: 8px 16px;
             border-radius: 20px;
             font-size: 0.9em;
@@ -234,9 +231,27 @@
 
         .price-note {
             font-size: 0.85em;
-            color: #ff6b6b;
+            color: #aaa;
             margin-top: 10px;
-            font-weight: 500;
+            font-weight: 400;
+        }
+
+        .success-message {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .success-message h2 {
+            color: #fff;
+            font-size: 2em;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .success-message p {
+            color: #aaa;
+            font-size: 1.2em;
+            line-height: 1.5;
         }
 
         @media (max-width: 768px) {
@@ -260,8 +275,8 @@
 </head>
 <body>
     <div class="container">
-        <div class="step-counter">
-            <span id="step-counter">1 / 11</span>
+                    <div class="step-counter">
+            <span id="step-counter">1 / 13</span>
         </div>
         
         <div class="progress-bar">
@@ -473,20 +488,30 @@
                 </div>
             </div>
 
-            <!-- Paso 11: Información final -->
+            <!-- Paso 11: Aspecto específico -->
             <div class="step" id="step-11">
-                <div class="question">Información adicional</div>
+                <div class="question">¿En qué aspecto específico te gustaría que te ayudemos? Cuéntanos qué estás buscando y así podremos apoyarte mejor ✨</div>
+                <textarea name="aspecto_especifico" placeholder="Describe específicamente en qué necesitas ayuda"></textarea>
+                <div class="buttons">
+                    <button type="button" class="btn btn-secondary" onclick="prevStep()">Anterior</button>
+                    <button type="button" class="btn btn-primary" onclick="nextStep()">Siguiente</button>
+                </div>
+            </div>
+
+            <!-- Paso 12: Redes sociales -->
+            <div class="step" id="step-12">
+                <div class="question">Si tienes redes sociales, déjanos aquí el enlace o dinos cómo encontrarte en Instagram, TikTok u otra plataforma 🤗</div>
+                <input type="text" name="redes_sociales" placeholder="@tuusuario o enlace completo">
+                <div class="buttons">
+                    <button type="button" class="btn btn-secondary" onclick="prevStep()">Anterior</button>
+                    <button type="button" class="btn btn-primary" onclick="nextStep()">Siguiente</button>
+                </div>
+            </div>
+
+            <!-- Paso 13: Información final -->
+            <div class="step" id="step-13">
+                <div class="question">Información final</div>
                 
-                <div style="margin-bottom: 20px;">
-                    <label for="aspecto_especifico">¿En qué aspecto específico te gustaría que te ayudemos? Cuéntanos qué estás buscando y así podremos apoyarte mejor ✨</label>
-                    <textarea name="aspecto_especifico" placeholder="Describe específicamente en qué necesitas ayuda"></textarea>
-                </div>
-
-                <div style="margin-bottom: 20px;">
-                    <label for="redes_sociales">Si tienes redes sociales, déjanos aquí el enlace o dinos cómo encontrarte en Instagram, TikTok u otra plataforma 🤗</label>
-                    <input type="text" name="redes_sociales" placeholder="@tuusuario o enlace completo">
-                </div>
-
                 <div style="margin-bottom: 20px;">
                     <label for="como_llegaste">¿Cómo llegaste a nosotros? 😃</label>
                     <div class="radio-group">
@@ -527,12 +552,20 @@
                     <button type="submit" class="btn btn-submit">Enviar Formulario</button>
                 </div>
             </div>
+
+            <!-- Mensaje de éxito -->
+            <div class="step" id="success-step" style="display: none;">
+                <div class="success-message">
+                    <h2>¡Gracias por completar este paso!</h2>
+                    <p>Antuane y Jorge pronto se pondrán en contacto para confirmar la videollamada.</p>
+                </div>
+            </div>
         </form>
     </div>
 
     <script>
         let currentStep = 1;
-        const totalSteps = 11;
+        const totalSteps = 13;
 
         function updateProgress() {
             const progress = (currentStep / totalSteps) * 100;
@@ -598,8 +631,20 @@
 
         // Manejar envío del formulario
         document.querySelector('form').addEventListener('submit', function(e) {
-            // El formulario se enviará automáticamente a Netlify
-            // Puedes agregar aquí validaciones adicionales si es necesario
+            e.preventDefault();
+            
+            // Mostrar mensaje de éxito
+            document.querySelectorAll('.step').forEach(step => {
+                step.classList.remove('active');
+            });
+            document.getElementById('success-step').style.display = 'block';
+            
+            // Ocultar contador de pasos
+            document.querySelector('.step-counter').style.display = 'none';
+            document.querySelector('.progress-bar').style.display = 'none';
+            
+            // Enviar el formulario (comentado para evitar errores locales)
+            // this.submit();
         });
     </script>
 </body>
